@@ -16,11 +16,20 @@ def require_env(name: str) -> str:
 
 
 def get_service_arn(apprunner_client, service_name: str) -> Optional[str]:
-    paginator = apprunner_client.get_paginator("list_services")
-    for page in paginator.paginate():
+    next_token = None
+    while True:
+        request = {}
+        if next_token:
+            request["NextToken"] = next_token
+
+        page = apprunner_client.list_services(**request)
         for service in page.get("ServiceSummaryList", []):
             if service.get("ServiceName") == service_name:
                 return service.get("ServiceArn")
+
+        next_token = page.get("NextToken")
+        if not next_token:
+            break
     return None
 
 
