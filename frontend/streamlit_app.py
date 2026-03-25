@@ -10,12 +10,28 @@ DEFAULT_API_BASE_URL = "http://localhost:8000"
 st.set_page_config(page_title="Word Count Client", page_icon=":page_facing_up:", layout="wide")
 st.title("Word Count Frontend")
 st.write("Upload one or more files. Each file is sent to the FastAPI backend for processing.")
+st.caption("If this page loads, the frontend service is running.")
 
 api_base_url = st.text_input(
     "API Base URL",
     value=os.getenv("API_BASE_URL", DEFAULT_API_BASE_URL),
     help="Example: https://<your-api-service-url>",
 )
+
+with st.expander("Backend connection status", expanded=True):
+    if api_base_url.strip():
+        try:
+            health_response = requests.get(f"{api_base_url.rstrip('/')}/health", timeout=10)
+            if health_response.ok:
+                st.success(f"Backend reachable at {api_base_url.rstrip('/')} (health: {health_response.status_code})")
+            else:
+                st.warning(
+                    f"Backend responded with status {health_response.status_code} at {api_base_url.rstrip('/')}/health"
+                )
+        except Exception as exc:
+            st.error(f"Could not reach backend health endpoint: {exc}")
+    else:
+        st.info("Enter an API Base URL to test backend connectivity.")
 
 uploaded_files = st.file_uploader(
     "Upload files",

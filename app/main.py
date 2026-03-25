@@ -42,6 +42,21 @@ def count_words(text: str) -> int:
     return len(re.findall(r"\b[\w']+\b", text))
 
 
+@app.get("/")
+async def root() -> dict:
+    return {
+        "service": "word-count-api",
+        "status": "ok",
+        "docs": "/docs",
+        "word_count_endpoint": "/word-count",
+    }
+
+
+@app.get("/health")
+async def health() -> dict:
+    return {"status": "ok"}
+
+
 @app.post("/word-count")
 async def word_count(file: UploadFile = File(...)) -> dict:
     if not file.filename:
