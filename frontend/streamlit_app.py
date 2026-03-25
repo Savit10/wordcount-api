@@ -50,7 +50,7 @@ def call_word_count_api(base_url: str, uploaded_file: Any) -> dict:
         )
     }
 
-    response = requests.post(f"{base_url.rstrip('/')}/word-count", files=files, timeout=120)
+    response = requests.post(f"{base_url.rstrip('/')}/api/v1/word-count", files=files, timeout=120)
     response.raise_for_status()
     payload = response.json()
     payload["size_bytes"] = len(file_content)

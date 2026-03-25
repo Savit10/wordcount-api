@@ -47,3 +47,7 @@ htmlcov/
 
 # Local helper scripts with account-specific values
 setup_iam_local.sh
+
+# Local test input files
+testing/files/*
+!testing/files/.gitkeep
