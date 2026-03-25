@@ -33,18 +33,18 @@ def get_service_arn(apprunner_client, service_name: str) -> Optional[str]:
     return None
 
 
-def get_runtime_env_vars() -> list[dict[str, str]]:
+def get_runtime_env_vars() -> dict[str, str]:
     raw = os.getenv("RUNTIME_ENV_VARS_JSON", "").strip()
     if not raw:
-        return []
+        return {}
 
     parsed = json.loads(raw)
     if not isinstance(parsed, dict):
         raise RuntimeError("RUNTIME_ENV_VARS_JSON must be a JSON object.")
 
-    env_vars = []
+    env_vars: dict[str, str] = {}
     for key, value in parsed.items():
-        env_vars.append({"Name": str(key), "Value": str(value)})
+        env_vars[str(key)] = str(value)
     return env_vars
 
 
